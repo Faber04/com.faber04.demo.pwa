@@ -1,0 +1,26 @@
+# Build output
+dist/
+.vite/
+dist-ssr/
+
+# Dependencies
+node_modules/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Cross-project safety (root-level only)
+/com.faber04.private-project-docs/
+/private-project-docs/
+/pwa-docs/
