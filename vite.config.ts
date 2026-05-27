@@ -7,13 +7,16 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      registerType: 'prompt',
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
         name: 'PWA Demo',
         short_name: 'PWA Demo',
         description: 'A minimal Progressive Web App demo',
-        theme_color: '#ffffff',
+        theme_color: '#6366f1',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
@@ -21,18 +24,25 @@ export default defineConfig({
         scope: '/demo/pwa/',
         icons: [
           {
-            src: 'favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'any maskable',
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
           },
         ],
       },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,svg}'],
-        clientsClaim: true,
-        cleanupOutdatedCaches: true,
-        skipWaiting: true,
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,svg,png}'],
       },
     }),
   ],

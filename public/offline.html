@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#6366f1" />
+    <title>Offline — PWA Demo</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: system-ui, sans-serif;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f8fb;
+        color: #111;
+        padding: 2rem;
+        text-align: center;
+      }
+      .card {
+        max-width: 360px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 2.5rem 2rem;
+      }
+      .icon { font-size: 3rem; margin-bottom: 1rem; }
+      h1 { font-size: 1.4rem; font-weight: 700; color: #4f46e5; margin-bottom: .5rem; }
+      p  { font-size: .95rem; color: #6b7280; line-height: 1.6; margin-bottom: 1.25rem; }
+      button {
+        padding: .65rem 1.25rem;
+        background: #6366f1;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: .95rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover { background: #4f46e5; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="icon">✈️</div>
+      <h1>You're offline</h1>
+      <p>No internet connection detected. Check your network and try again.</p>
+      <button onclick="location.reload()">Try again</button>
+    </div>
+  </body>
+</html>
