@@ -29,6 +29,17 @@ if [[ ! -d "$ROOT_DIR/dist" ]]; then
   exit 1
 fi
 
+# Pre-deploy check: show JS/CSS assets in current build.
+# Any JS/CSS present on the remote but NOT in this list will be deleted by --delete.
+echo ""
+echo "── JS/CSS assets in current build ──────────────────────────"
+find "$ROOT_DIR/dist" \( -name "*.js" -o -name "*.css" \) \
+  | sed "s|$ROOT_DIR/dist/||" \
+  | sort
+echo "─────────────────────────────────────────────────────────────"
+echo "Remote JS/CSS files not listed above will be removed."
+echo ""
+
 tmp_script="$(mktemp)"
 trap 'rm -f "$tmp_script"' EXIT
 
@@ -43,4 +54,5 @@ EOF
 
 lftp -f "$tmp_script"
 
-echo "FTP publish completed."
+echo ""
+echo "FTP publish completed. Stale JS/CSS assets removed from remote."
