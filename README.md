@@ -2,6 +2,8 @@
 
 A **Progressive Web App demo** built with React 18 + TypeScript + Vite, showcasing core PWA capabilities in a clean, installable app shell.
 
+🔗 **Live demo:** [www.faber04.com/demo/pwa](https://www.faber04.com/demo/pwa/)
+
 ## Features
 
 ### 🔔 Notifications
