@@ -1,4 +1,4 @@
-# com.faber04.demo.pwa
+# Progressive Web Application
 
 A **Progressive Web App demo** built with React 18 + TypeScript + Vite, showcasing core PWA capabilities in a clean, installable app shell.
 
