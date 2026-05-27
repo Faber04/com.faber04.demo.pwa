@@ -20,11 +20,3 @@ The app will be built with:
 
 Libraries or frameworks may be introduced later, but they are not fixed yet.
 
-## Internal docs link
-
-This project is linked to the private docs repository through:
-
-- Registry entry:  
-  `/Users/fabiobernardi/Development/web/com.faber04.private-project-docs/projects/PROJECT_REGISTRY.md`
-- Project docs root:  
-  `/Users/fabiobernardi/Development/web/com.faber04.private-project-docs/projects/pwa`
