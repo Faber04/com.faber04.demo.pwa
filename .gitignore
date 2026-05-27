@@ -20,7 +20,9 @@ logs/
 .vscode/
 .idea/
 
+# Internal/Sensitive files
+INTERNAL/
+
 # Cross-project safety (root-level only)
 /com.faber04.private-project-docs/
 /private-project-docs/
-/pwa-docs/
