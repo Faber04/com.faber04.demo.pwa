@@ -59,8 +59,8 @@ export default function Notifications() {
 
     const payload = {
       body: 'This is a push notification from your PWA!',
-      icon: '/demo/pwa/pwa-192x192.png',
-      badge: '/demo/pwa/pwa-192x192.png',
+      icon: '/demos/pwa/pwa-192x192.png',
+      badge: '/demos/pwa/pwa-192x192.png',
       tag: 'pwa-demo-notification',
     }
 

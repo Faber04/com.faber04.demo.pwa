@@ -14,7 +14,7 @@ precacheAndRoute(self.__WB_MANIFEST)
 // Serve offline fallback for navigation requests when network fails
 setCatchHandler(async ({ request }) => {
   if (request.destination === 'document') {
-    const cached = await caches.match('/demo/pwa/offline.html')
+    const cached = await caches.match('/demos/pwa/offline.html')
     return cached ?? new Response('<h1>Offline</h1>', { headers: { 'Content-Type': 'text/html' } })
   }
   return Response.error()

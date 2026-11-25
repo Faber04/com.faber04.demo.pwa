@@ -50,7 +50,7 @@ export default function OfflineSupport() {
           <span className="feature-icon">✈️</span>
           <div>
             <strong>Offline fallback</strong>
-            <p>If a page navigation fails and the app is offline, the SW returns the cached <code>/demo/pwa/offline.html</code> instead of a browser error.</p>
+            <p>If a page navigation fails and the app is offline, the SW returns the cached <code>/demos/pwa/offline.html</code> instead of a browser error.</p>
           </div>
         </div>
         <div className="feature-item">
