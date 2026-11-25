@@ -104,5 +104,5 @@ npm run preview   # preview production build with active SW
 npm run deploy    # build + publish via FTP
 ```
 
-FTP credentials are stored in `INTERNAL/.ftp.env` (gitignored). See `ftp.env.example` for the required variables.
+FTP credentials are stored in `INTERNAL/.ftp.env` (gitignored, never committed). Required variables: `FTP_USER`, `FTP_PASS`, `FTP_HOST`, `FTP_BASE`. Example env files (`*.env.example`) are gitignored too and must not be committed.
 
