@@ -1,108 +1,86 @@
-# Progressive Web Application
+<h1 align="center">PWA Demo</h1>
 
-A **Progressive Web App demo** built with React 18 + TypeScript + Vite, showcasing core PWA capabilities in a clean, installable app shell.
+<p align="center"><b>Core Progressive Web App capabilities, in one clean installable shell.</b><br>
+A demo built with React 18 + TypeScript + Vite showcasing notifications, install flow, network status, offline support and service-worker updates — each with its "how it works".</p>
 
-🔗 **Live demo:** [www.faber04.com/demos/pwa](https://www.faber04.com/demos/pwa/)
+<p align="center">
+  <a href="https://www.faber04.com/demos/pwa/"><img src="https://img.shields.io/badge/Live_Demo-0ea5e9?style=for-the-badge" alt="Live demo"></a>
+  <a href="https://github.com/Faber04/com.faber04.demo.pwa"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
+</p>
 
-## Features
-
-### 🔔 Notifications
-
-Demonstrates the [Web Notifications API](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API) and its integration with a service worker.
-
-**How it works:**
-
-1. **Toggle switch** — calls `Notification.requestPermission()` on first enable. The browser-level permission state is reflected back into the UI (`granted` / `denied` / `unsupported`). Toggling off disables the feature locally (browser permission cannot be revoked programmatically).
-2. **Send button** — in production, fires `ServiceWorkerRegistration.showNotification()` via the active SW, so the notification is OS-native and works even if the tab loses focus. In dev (no active SW), falls back to `new Notification()` directly.
-3. **Click interception** — the custom service worker (`src/sw.ts`) listens for the `notificationclick` event, closes the notification, focuses the app window, and broadcasts a message to the page via `BroadcastChannel`. The page receives it and renders a feedback card.
-4. **Auto-dismiss** — the feedback card disappears after 5 s using a `setTimeout` cleared on unmount, with a CSS `@keyframes` fade-out starting at 4.6 s.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-0.1.0-0ea5e9" alt="version">
+  <img src="https://img.shields.io/badge/PWA-Workbox_7-22c55e" alt="PWA">
+  <img src="https://img.shields.io/badge/offline-ready-8b5cf6" alt="offline ready">
+</p>
 
 ---
 
-### ⬇︎ Install
+## The five capabilities
 
-Demonstrates the PWA install flow across platforms, powered by the [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest) and the `beforeinstallprompt` event.
-
-**How it works:**
-
-1. **Event capture at app level** — `beforeinstallprompt` fires once at page load, before the user navigates to the Install page. An `InstallContext` (React context wrapping the entire app) captures and stores it immediately so it is available whenever the page renders.
-2. **Chrome / Edge / Android** — when `deferredPrompt` is non-null, an install button calls `deferredPrompt.prompt()`. The browser shows its native install dialog. `deferredPrompt.userChoice` resolves with `accepted` or `dismissed`.
-3. **iOS Safari** — `beforeinstallprompt` is not supported. The platform is detected via `navigator.userAgent` and the page shows manual steps: Share → Add to Home Screen → Add.
-4. **macOS Safari** — same detection path; shows: File → Add to Dock → Add.
-5. **Already installed** — on mount, `window.matchMedia('(display-mode: standalone)')` (all platforms) and `navigator.standalone` (iOS) are checked. If true, the page shows a confirmation badge instead of install instructions.
+| | | | |
+|---|---|---|---|
+| **Notify** | **Install** | **Offline** | **Stay current** |
+| Web Notifications API via the service worker (`showNotification`), with a `notificationclick` handler that focuses the app and broadcasts to the page. Permission toggle reflects the real browser state (`granted`/`denied`/`unsupported`). | Web App Manifest + `beforeinstallprompt` captured at app level; native dialog on Chrome/Edge/Android, manual Share → Add to Home Screen on iOS, Add to Dock on macOS Safari, "already installed" badge via `display-mode: standalone`. | Workbox precaching of all build assets + `offline.html` fallback on navigation failure, `cleanupOutdatedCaches()` on activation, and a runtime cache inspector listing every cached URL by extension. | Real-time `online`/`offline` events + `NetworkInformation` API (`effectiveType`, `downlink`, `rtt`, `saveData`) with an event log, and the SW update cycle: `registerType: 'prompt'` banner → `SKIP_WAITING` → reload. |
 
 ---
 
-### 📶 Network Status
+## PWA setup
 
-Demonstrates real-time connectivity detection using the browser's network events and the `NetworkInformation` API.
-
-**How it works:**
-
-1. **Live status** — `navigator.onLine` gives the initial state on mount. `window.addEventListener('online' | 'offline')` fires on every connectivity change and updates the UI badge immediately.
-2. **Connection info** — `navigator.connection` (where supported, mainly Chrome/Android) exposes `effectiveType` (4g/3g/2g/slow-2g), `downlink` (Mb/s), `rtt` (ms) and `saveData` (data saver mode). These are displayed in an info grid.
-3. **Event log** — every `online`/`offline` event is prepended to a local state array (capped at 10 entries) with its timestamp, giving a scrollable history of connection changes during the session.
+- **Manifest** — generated by `vite-plugin-pwa` with icons, theme colour, `start_url` and `scope` scoped to `/demos/pwa/`
+- **Service worker** — custom `src/sw.ts` compiled via the `injectManifest` strategy; handles precaching, the offline fallback and `notificationclick`
+- **Icons** — 192×192, 512×512 (maskable), 180×180 Apple touch icon
+- **Offline fallback** — `public/offline.html` precached and served by the SW when a navigation request fails
 
 ---
 
-### ✈️ Offline Support
+## Quick start
 
-Demonstrates the Workbox precaching strategy and the SW offline fallback mechanism.
+```bash
+git clone https://github.com/Faber04/com.faber04.demo.pwa.git
+cd com.faber04.demo.pwa
+npm install
+npm run dev        # dev server (service worker NOT active in dev)
+npm run build      # production build
+npm run preview    # preview production build with the SW active
+npm run deploy     # build + publish via FTP (needs INTERNAL/.ftp.env)
+```
 
-**How it works:**
-
-1. **Precaching** — on SW install, Workbox injects `self.__WB_MANIFEST` (the list of all build assets) into the cache via `precacheAndRoute()`. All HTML, JS, CSS, fonts and icons are available immediately from cache on subsequent loads — no network needed.
-2. **Offline fallback** — `setCatchHandler()` from `workbox-routing` intercepts any navigation request that fails (i.e. the network is unreachable). If the request destination is `document`, the SW returns the precached `offline.html` instead of letting the browser show its default error page.
-3. **Cache cleanup** — `cleanupOutdatedCaches()` runs on SW activation and removes stale precache entries from previous deployments, preventing the cache from growing indefinitely.
-4. **Cache inspector** — the page reads all `CacheStorage` entries at runtime via `caches.keys()` and `cache.keys()`, listing every cached URL grouped by file extension.
-
----
-
-### 🔄 SW Update
-
-Demonstrates the service worker lifecycle and the update prompt pattern using `vite-plugin-pwa`'s `useRegisterSW` hook.
-
-**How it works:**
-
-1. **`registerType: 'prompt'`** — unlike `autoUpdate`, this mode does not silently skip the waiting SW. Instead, when a new SW finishes installing and enters the `waiting` state, `needRefresh` is set to `true` and the user is shown an explicit update prompt.
-2. **`SwUpdateContext`** — a React context wraps the entire app and calls `useRegisterSW` (from `virtual:pwa-register/react`) on mount, ensuring the SW is registered regardless of which page the user lands on. All pages can read `needRefresh`, `offlineReady`, and `updateServiceWorker` from this context.
-3. **Offline ready** — once the SW has precached all assets, `offlineReady` becomes `true`. A dismissible green banner confirms the app can now run without a network connection.
-4. **Update now** — when `needRefresh` is `true`, a blue banner appears with an "Update now" button that calls `updateServiceWorker(true)`, which posts a `SKIP_WAITING` message to the waiting SW and reloads the page to activate the new version.
+Production is served under a subfolder: `https://www.faber04.com/demos/pwa/`. FTP credentials live in `INTERNAL/.ftp.env` (gitignored, never committed).
 
 ---
 
 ## Tech stack
 
-| Tool | Version |
-|---|---|
-| React | 18 |
-| TypeScript | 5 |
-| Vite | 4 |
-| vite-plugin-pwa | 0.14 |
-| Workbox | via plugin |
-| React Router | 7 |
+<p align="center">
+  <img src="https://img.shields.io/badge/React_18-61dafb?logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript_5-3178c6?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Vite_4-646cff?logo=vite&logoColor=white" alt="Vite">
+  <img src="https://img.shields.io/badge/vite--plugin--pwa_0.14-22c55e" alt="vite-plugin-pwa">
+  <img src="https://img.shields.io/badge/Workbox_7-8b5cf6" alt="Workbox">
+  <img src="https://img.shields.io/badge/React_Router_7-ff6b6b" alt="React Router">
+</p>
 
-## PWA setup
+## Project structure
 
-- **Manifest** — generated by `vite-plugin-pwa` with icons, theme colour, `start_url` and `scope` scoped to `/demos/pwa/`
-- **Service worker** — custom `src/sw.ts` compiled via `injectManifest` strategy; handles precaching, offline fallback and `notificationclick` events
-- **Icons** — 192×192, 512×512 (maskable), 180×180 Apple touch icon
-- **Offline fallback** — `public/offline.html` precached and served by the SW on navigation failure
-
-## Development
-
-```bash
-npm install
-npm run dev       # local dev server (SW not active)
-npm run build     # production build
-npm run preview   # preview production build with active SW
+```text
+src/
+  pages/             # Home, Notifications, Install, NetworkStatus, OfflineSupport, SwUpdate
+  components/        # Layout, Menu, CodeBlock
+  context/           # InstallProvider (beforeinstallprompt), SwUpdateProvider (useRegisterSW)
+  sw.ts              # custom service worker (injectManifest)
+  App.tsx, main.tsx, style.css
+public/              # manifest icons, offline.html, favicon
+scripts/             # publish-ftp.sh
 ```
 
-## Deploy
+## Quality
 
 ```bash
-npm run deploy    # build + publish via FTP
+npm run lint       # ESLint, zero warnings
+npm run build      # tsc + vite build
 ```
 
-FTP credentials are stored in `INTERNAL/.ftp.env` (gitignored, never committed). Required variables: `FTP_USER`, `FTP_PASS`, `FTP_HOST`, `FTP_BASE`. Example env files (`*.env.example`) are gitignored too and must not be committed.
+---
 
+<p align="center">Built by <a href="https://github.com/Faber04">@Faber04</a></p>
